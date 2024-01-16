@@ -287,7 +287,7 @@ class BrushTask(object):
         根据条件检查所有任务下载完成的种子，按条件进行删除，并更新任务数据
         由定时服务调用
         """
-
+        log.info("【Brush】开始执行删种任务")
         def __send_message(_task_name, _delete_type, _torrent_name, _download_name, _torrent_size,
                            _download_size, _upload_size, _ratio, _add_time):
             """
@@ -527,6 +527,7 @@ class BrushTask(object):
                                                          remove_count=len(delete_ids) + len(remove_torrent_ids))
             except Exception as e:
                 ExceptionUtils.exception_traceback(e)
+                log.error(f"【Brush】删种任务错误 {str(e)}")
 
     def __is_allow_new_torrent(self, taskinfo, dlcount, torrent_size=None):
         """
