@@ -306,7 +306,8 @@ class BrushTask(object):
             self.message.send_brushtask_remove_message(title=_msg_title, text=_msg_text)
 
         # 遍历所有任务
-        for taskid, taskinfo in self._brush_tasks.items():
+        for taskinfo in self.get_brushtask_info():
+            taskid = taskinfo.get("id")
             if taskinfo.get("state") == 'N':
                 log.debug(f"【Brush】跳过删种任务 {taskinfo.get('name')}")
                 continue
@@ -826,7 +827,6 @@ class BrushTask(object):
         :param avg_upspeed: 上传平均速度
         :param iatime: 未活动时间
         """
-        log.debug(f"【Brush】检查删种 上传速度 {avg_upspeed}")
         if not remove_rule:
             return False
         try:
@@ -836,13 +836,13 @@ class BrushTask(object):
                     if len(rule_times) > 1 and rule_times[1]:
                         if float(seeding_time) > float(rule_times[1]) * 3600:
                             return True, BrushDeleteType.SEEDTIME
-            if remove_rule.get("ratio") and ratio:
+            if remove_rule.get("ratio") and ratio is not None:
                 rule_ratios = remove_rule.get("ratio").split("#")
                 if rule_ratios[0]:
                     if len(rule_ratios) > 1 and rule_ratios[1]:
                         if float(ratio) > float(rule_ratios[1]):
                             return True, BrushDeleteType.RATIO
-            if remove_rule.get("uploadsize") and uploaded:
+            if remove_rule.get("uploadsize") and uploaded is not None:
                 rule_uploadsizes = remove_rule.get("uploadsize").split("#")
                 if rule_uploadsizes[0]:
                     if len(rule_uploadsizes) > 1 and rule_uploadsizes[1]:
