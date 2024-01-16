@@ -818,6 +818,7 @@ class BrushTask(object):
         :param avg_upspeed: 上传平均速度
         :param iatime: 未活动时间
         """
+        log.debug(f"【Brush】检查删种 上传速度 {avg_upspeed}")
         if not remove_rule:
             return False
         try:
@@ -845,7 +846,7 @@ class BrushTask(object):
                     if len(rule_times) > 1 and rule_times[1]:
                         if float(dltime) > float(rule_times[1]) * 3600:
                             return True, BrushDeleteType.DLTIME
-            if remove_rule.get("avg_upspeed") and avg_upspeed:
+            if remove_rule.get("avg_upspeed") and avg_upspeed is not None:
                 rule_avg_upspeeds = remove_rule.get("avg_upspeed").split("#")
                 if rule_avg_upspeeds[0]:
                     if len(rule_avg_upspeeds) > 1 and rule_avg_upspeeds[1]:
@@ -859,6 +860,7 @@ class BrushTask(object):
                             return True, BrushDeleteType.IATIME
         except Exception as err:
             ExceptionUtils.exception_traceback(err)
+            log.error(f"【Brush】刷流任务错误 {str(err)}")
         return False, BrushDeleteType.NOTDELETE
 
     @staticmethod
