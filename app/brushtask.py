@@ -308,6 +308,7 @@ class BrushTask(object):
         # 遍历所有任务
         for taskid, taskinfo in self._brush_tasks.items():
             if taskinfo.get("state") == 'N':
+                log.debug(f"【Brush】跳过删种任务 {taskinfo.get('name')}")
                 continue
             try:
                 # 总上传量
@@ -330,6 +331,8 @@ class BrushTask(object):
                 # 避免种子被全删，没有种子ID的不处理
                 if not torrent_ids:
                     continue
+
+                log.debug(f"【Brush】开始执行删种任务 {task_name}:{len(torrent_ids)}")
                 # 下载器参数
                 downloader_cfg = self.downloader.get_downloader_conf(downloader_id)
                 if not downloader_cfg:
@@ -340,6 +343,8 @@ class BrushTask(object):
                 # 查询下载器中下载完成的所有种子
                 torrents = self.downloader.get_completed_torrents(downloader_id=downloader_id,
                                                                   ids=torrent_ids)
+                
+                log.debug(f"【Brush】删种任务 从下载器拿到{len(torrent_ids)}个完成种子")
                 # 有错误不处理了，避免误删种子
                 if torrents is None:
                     log.warn("【Brush】任务 %s 获取下载完成种子失败" % task_name)
