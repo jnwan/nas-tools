@@ -325,7 +325,7 @@ class BrushTask(object):
                 remove_rule = taskinfo.get("remove_rule")
                 sendmessage = taskinfo.get("sendmessage")
 
-                log.debug(f"【Brush】开始执行删种任务 {task_name}:{len(torrent_ids)}")
+                log.debug(f"【Brush】开始执行删种任务 {task_name}")
 
                 # 当前任务种子详情
                 task_torrents = self.get_brushtask_torrents(taskid)
