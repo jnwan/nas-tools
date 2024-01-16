@@ -329,8 +329,8 @@ class BrushTask(object):
 
                 # 当前任务种子详情
                 task_torrents = self.get_brushtask_torrents(taskid)
-                log.debug(f"【Brush】删种任务 {task_name}: 从数据库获得{len(torrent_ids)}各种子")
                 torrent_ids = [item.DOWNLOAD_ID for item in task_torrents if item.DOWNLOAD_ID]
+                log.debug(f"【Brush】删种任务 {task_name}: 从数据库获得{len(torrent_ids)}各种子")
                 # 避免种子被全删，没有种子ID的不处理
                 if not torrent_ids:
                     continue
