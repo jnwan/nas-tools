@@ -287,7 +287,6 @@ class BrushTask(object):
         根据条件检查所有任务下载完成的种子，按条件进行删除，并更新任务数据
         由定时服务调用
         """
-        log.info("【Brush】开始执行删种任务")
         def __send_message(_task_name, _delete_type, _torrent_name, _download_name, _torrent_size,
                            _download_size, _upload_size, _ratio, _add_time):
             """
@@ -305,8 +304,10 @@ class BrushTask(object):
                         f"删除规则：{_delete_type.value}"
             self.message.send_brushtask_remove_message(title=_msg_title, text=_msg_text)
 
+        taskinfos = self.get_brushtask_info()
+        log.info(f"【Brush】开始执行删种任务对{len(taskinfos)}个刷流任务")
         # 遍历所有任务
-        for taskinfo in self.get_brushtask_info():
+        for taskinfo in taskinfos:
             taskid = taskinfo.get("id")
             if taskinfo.get("state") == 'N':
                 log.debug(f"【Brush】跳过删种任务 {taskinfo.get('name')}")
@@ -326,12 +327,12 @@ class BrushTask(object):
                 remove_rule = taskinfo.get("remove_rule")
                 sendmessage = taskinfo.get("sendmessage")
 
-                log.debug(f"【Brush】开始执行删种任务 {task_name}")
+                log.info(f"【Brush】开始执行删种任务 {task_name}")
 
                 # 当前任务种子详情
                 task_torrents = self.get_brushtask_torrents(taskid)
                 torrent_ids = [item.DOWNLOAD_ID for item in task_torrents if item.DOWNLOAD_ID]
-                log.debug(f"【Brush】删种任务 {task_name}: 从数据库获得{len(torrent_ids)}各种子")
+                log.debug(f"【Brush】删种任务 {task_name}: 从数据库获得{len(torrent_ids)}个种子")
                 # 避免种子被全删，没有种子ID的不处理
                 if not torrent_ids:
                     continue
